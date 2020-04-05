@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Infla o menu principal; e adiciona os itens na action bar (se exisitir).
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -47,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_insert_dummy_data) {
+            Toast.makeText(this, "Inserindo dados ficticios...", Toast.LENGTH_SHORT).show();
+            return true;
+        }else if(id == R.id.action_delete_all_entries){
+            Toast.makeText(this, "Deletando todos os animais...", Toast.LENGTH_SHORT).show();
             return true;
         }
 

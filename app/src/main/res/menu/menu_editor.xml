@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.petsapp.MainActivity">
     <item
-        android:id="@+id/action_insert_dummy_data"
-        android:orderInCategory="1"
-        android:title="@string/action_insert_dummy_data"
-        app:showAsAction="never" />
+        android:id="@+id/action_save"
+        android:title="@string/action_save"
+        android:icon="@drawable/ic_done"
+        app:showAsAction="always"/>
     <item
-        android:id="@+id/action_delete_all_entries"
-        android:orderInCategory="2"
-        android:title="@string/action_delete_all_entries"
-        app:showAsAction="never"/>
+        android:id="@+id/action_delete"
+        android:orderInCategory="1"
+        android:title="@string/action_delete"
+        app:showAsAction="never" />
 </menu>

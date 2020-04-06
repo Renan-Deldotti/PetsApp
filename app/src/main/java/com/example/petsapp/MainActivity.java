@@ -1,15 +1,19 @@
 package com.example.petsapp;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 
 import com.example.petsapp.data.PetContract;
 import com.example.petsapp.data.PetDbHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -20,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+    private PetDbHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,20 +38,21 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,EditorActivity.class);
+                Intent intent = new Intent(MainActivity.this, EditorActivity.class);
                 startActivity(intent);
             }
         });
-        displayDatabaseInfo();
-    }
-
-    private void displayDatabaseInfo() {
         // To access our database, we instantiate our subclass of SQLiteOpenHelper
         // and pass the context, which is the current activity.
-        PetDbHelper mDbHelper = new PetDbHelper(this);
+        dbHelper = new PetDbHelper(this);
+        displayDatabaseInfo(null);
+    }
 
+    private void displayDatabaseInfo(@Nullable Long l) {
         // Create and/or open a database to read from it
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        TextView displayView = (TextView) findViewById(R.id.text_view_pet);
+        String rowCount ="";
 
         // Perform this raw SQL query "SELECT * FROM pets"
         // to get a Cursor that contains all rows from the pets table.
@@ -53,13 +60,25 @@ public class MainActivity extends AppCompatActivity {
         try {
             // Display the number of rows in the Cursor (which reflects the number of rows in the
             // pets table in the database).
-            TextView displayView = (TextView) findViewById(R.id.text_view_pet);
-            displayView.setText("Number of rows in pets database table: " + cursor.getCount());
+            rowCount = "" + cursor.getCount();
         } finally {
             // Always close the cursor when you're done reading from it. This releases all its
             // resources and makes it invalid.
             cursor.close();
         }
+        if (l != null){
+            if (l == -1){
+                Snackbar.make(findViewById(R.id.activity_main),"Erro ao inserir dados ficticios.",BaseTransientBottomBar.LENGTH_LONG).show();
+            }else {
+                Snackbar.make(findViewById(R.id.activity_main),"Dados inserido id:"+l,BaseTransientBottomBar.LENGTH_LONG).setAction("Desfazer", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getApplicationContext(),"Dados apagados",Toast.LENGTH_LONG).show();
+                    }
+                }).show();
+            }
+        }
+        displayView.setText("Number of rows in pets database table: " + rowCount);
     }
 
     @Override
@@ -71,20 +90,26 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_insert_dummy_data) {
-            Toast.makeText(this, "Inserindo dados ficticios...", Toast.LENGTH_SHORT).show();
+            insertPetDummyData();
             return true;
-        }else if(id == R.id.action_delete_all_entries){
+        } else if (id == R.id.action_delete_all_entries) {
             Toast.makeText(this, "Deletando todos os animais...", Toast.LENGTH_SHORT).show();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void insertPetDummyData() {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(PetContract.PetsEntry.COLUMN_PET_NAME, "Toto");
+        contentValues.put(PetContract.PetsEntry.COLUMN_PET_BREED, "Terrier");
+        contentValues.put(PetContract.PetsEntry.COLUMN_PET_GENDER, PetContract.PetsEntry.GENDER_MALE);
+        contentValues.put(PetContract.PetsEntry.COLUMN_PET_WEIGHT, 7);
+        long l = database.insert(PetContract.PetsEntry.TABLE_NAME, null, contentValues);
+        displayDatabaseInfo(l);
     }
 }

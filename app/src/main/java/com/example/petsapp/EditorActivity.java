@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
+import com.example.petsapp.data.PetContract;
 import com.google.android.material.snackbar.Snackbar;
 
 public class EditorActivity extends AppCompatActivity {
@@ -50,18 +51,18 @@ public class EditorActivity extends AppCompatActivity {
                 String selected = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selected)){
                     if (selected.equals(getString(R.string.gender_male))){
-                        gender = 1; // 1 = Male
+                        gender = PetContract.PetsEntry.GENDER_MALE;
                     }else if (selected.equals(getString(R.string.gender_female))){
-                        gender = 2; // 2 = Female
+                        gender = PetContract.PetsEntry.GENDER_FEMALE;
                     }
                 }else {
-                    gender = 0; // Unknown
+                    gender = PetContract.PetsEntry.GENDER_UNKNOWN;
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                gender = 0; // Unknown
+                gender = PetContract.PetsEntry.GENDER_UNKNOWN;
             }
         });
     }

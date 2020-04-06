@@ -3,6 +3,7 @@ package com.example.petsapp.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -28,6 +29,7 @@ public class PetDbHelper extends SQLiteOpenHelper {
                 + PetContract.PetsEntry.COLUMN_PET_WEIGHT + " INTEGER NOT NULL DEFAULT 0"
                 + ");";
         db.execSQL(SQL_CREATE_PETS_TABLE);
+        Log.e(PetDbHelper.class.getSimpleName(),"SQL da tabela criada = "+SQL_CREATE_PETS_TABLE);
     }
 
     @Override

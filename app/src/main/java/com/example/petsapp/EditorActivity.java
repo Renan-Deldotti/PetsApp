@@ -116,10 +116,15 @@ public class EditorActivity extends AppCompatActivity {
             contentValues.put(PetContract.PetsEntry.COLUMN_PET_GENDER, gender);
             contentValues.put(PetContract.PetsEntry.COLUMN_PET_WEIGHT, petWeight);
             long rowId = petsModel.insertNewPet(contentValues);
-            Toast.makeText(this,"Pet added id: "+rowId,Toast.LENGTH_LONG).show();
-            finish();
+            if (rowId != -1) {
+                Toast.makeText(this, "Pet added id: " + rowId, Toast.LENGTH_LONG).show();
+                finish();
+            }else {
+                Toast.makeText(this,"Error code: "+rowId,Toast.LENGTH_LONG).show();
+            }
         }else{
-            Toast.makeText(this,"Name field cannot be empty.",Toast.LENGTH_LONG).show();
+            editText = findViewById(R.id.edit_pet_name);
+            editText.setError("Name field required");
         }
     }
 }

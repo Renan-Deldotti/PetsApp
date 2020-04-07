@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         petsModel = new PetsModel(this);
-        displayDatabaseInfo(null);
+        //displayDatabaseInfo(null);
     }
 
     @Override

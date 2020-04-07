@@ -47,6 +47,12 @@ public class MainActivity extends AppCompatActivity {
         displayDatabaseInfo(null);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        displayDatabaseInfo(null);
+    }
+
     private void displayDatabaseInfo(@Nullable Long rowId) {
         TextView displayView = (TextView) findViewById(R.id.text_view_pet);
         String rowCount = petsModel.getRowCount();

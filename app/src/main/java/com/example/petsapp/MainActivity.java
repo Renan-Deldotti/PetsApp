@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayDatabaseInfo(@Nullable Long rowId) {
-        TextView displayView = (TextView) findViewById(R.id.text_view_pet);
+        TextView displayView = findViewById(R.id.text_view_pet);
         String rowCount = petsModel.getRowCount();
         if (rowId != null){
             if (rowId == -1){

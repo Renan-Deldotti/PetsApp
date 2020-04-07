@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.util.HashMap;
+
 public class PetsModel {
     private PetDbHelper dbHelper;
     private SQLiteDatabase database;
@@ -24,11 +26,14 @@ public class PetsModel {
         contentValues.put(PetContract.PetsEntry.COLUMN_PET_BREED, "Terrier");
         contentValues.put(PetContract.PetsEntry.COLUMN_PET_GENDER, PetContract.PetsEntry.GENDER_MALE);
         contentValues.put(PetContract.PetsEntry.COLUMN_PET_WEIGHT, 7);
-        long rowId = database.insert(PetContract.PetsEntry.TABLE_NAME, null, contentValues);
-        return rowId;
+        return database.insert(PetContract.PetsEntry.TABLE_NAME, null, contentValues);
     }
     public void readFromPetsdb(){
         // action
+    }
+    public long insertNewPet(ContentValues contentValues){
+        database = dbHelper.getWritableDatabase();
+        return database.insert(PetContract.PetsEntry.TABLE_NAME,null,contentValues);
     }
     public String getRowCount(){
         String rowCount = "";

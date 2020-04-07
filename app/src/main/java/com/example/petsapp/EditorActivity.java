@@ -1,5 +1,6 @@
 package com.example.petsapp;
 
+import android.content.ContentValues;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -17,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
 import com.example.petsapp.data.PetContract;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.petsapp.data.PetsModel;
 
 public class EditorActivity extends AppCompatActivity {
     /** Edita ou cria um novo Pet */
@@ -25,11 +26,14 @@ public class EditorActivity extends AppCompatActivity {
     private Spinner genderSpinner;
     /** Sexo -> 0 = indefinido, 1 = masculino, 2 = feminino */
     private int gender = 0;
+    /** Cria a variavel para o PetsModel */
+    private PetsModel petsModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+        petsModel = new PetsModel(this);
         nameEditText = findViewById(R.id.edit_pet_name);
         breedEditText = findViewById(R.id.edit_pet_breed);
         weightEditText = findViewById(R.id.edit_pet_weight);
@@ -79,13 +83,7 @@ public class EditorActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_save:
-                Snackbar.make(findViewById(R.id.activity_editor), "Data saved.", Snackbar.LENGTH_LONG)
-                        .setAction("UNDO", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(EditorActivity.this,"Desfeito",Toast.LENGTH_LONG).show();
-                            }
-                        }).show();
+                addNewPet();
                 return true;
             case R.id.action_delete:
                 return true;
@@ -94,5 +92,34 @@ public class EditorActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void addNewPet() {
+        EditText editText = findViewById(R.id.edit_pet_name);
+        String petName = "" + editText.getText().toString().trim();
+
+        editText = findViewById(R.id.edit_pet_breed);
+        String petBreed = "" + editText.getText().toString().trim();
+
+        editText = findViewById(R.id.edit_pet_weight);
+        String pw = editText.getText().toString().trim();
+        int petWeight;
+        try {
+            petWeight = Integer.parseInt(pw);
+        } catch (NumberFormatException e) {
+            petWeight = 0;
+        }
+        if (!TextUtils.isEmpty(petName)) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(PetContract.PetsEntry.COLUMN_PET_NAME, petName);
+            contentValues.put(PetContract.PetsEntry.COLUMN_PET_BREED, petBreed);
+            contentValues.put(PetContract.PetsEntry.COLUMN_PET_GENDER, gender);
+            contentValues.put(PetContract.PetsEntry.COLUMN_PET_WEIGHT, petWeight);
+            long rowId = petsModel.insertNewPet(contentValues);
+            Toast.makeText(this,"Pet added id: "+rowId,Toast.LENGTH_LONG).show();
+            finish();
+        }else{
+            Toast.makeText(this,"Name field cannot be empty.",Toast.LENGTH_LONG).show();
+        }
     }
 }

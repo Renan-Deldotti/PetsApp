@@ -44,6 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:spinnerMode="dropdown"
+        android:dropDownWidth="128dp"
         app:layout_constraintStart_toEndOf="@id/guideline_33_pc"
         app:layout_constraintTop_toBottomOf="@id/edit_pet_breed" />
 

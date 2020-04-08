@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 }).show();
             }
         }
-        displayView.setText("Number of rows in pets database table: " + rowCount);
+        displayView.setText(rowCount);
     }
 
     @Override

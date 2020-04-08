@@ -43,7 +43,7 @@ public class PetsModel {
          * breed TEXT
          * gender INTEGER NOT NULL
          * weight INTEGER NOT NULL DEFAULT 0 */
-        String rowCount = "";
+        StringBuilder rowCount = new StringBuilder();
         // Configura o camando para ler os dados
         database = dbHelper.getReadableDatabase();
         String[] projection = {
@@ -55,16 +55,33 @@ public class PetsModel {
             };
         // Executa o comando para receber todos os dados da tabela
         Cursor cursor = database.query(PetContract.PetsEntry.TABLE_NAME,projection,null,null,null,null,null);
+        int i =0;
         try {
             // Conta o numero de linhas da tabela
-            rowCount = "" + cursor.getCount();
+            rowCount = new StringBuilder("Number of rows: " + cursor.getCount() + "\nPet table data:\n");
+            rowCount.append(PetContract.PetsEntry._ID + " - " + PetContract.PetsEntry.COLUMN_PET_NAME + " - "
+                    + PetContract.PetsEntry.COLUMN_PET_BREED + " - " + PetContract.PetsEntry.COLUMN_PET_GENDER + " - "
+                    + PetContract.PetsEntry.COLUMN_PET_WEIGHT + "\n\n\n");
+            int petIdCol = cursor.getColumnIndex(PetContract.PetsEntry._ID);
+            int petNameCol = cursor.getColumnIndex(PetContract.PetsEntry.COLUMN_PET_NAME);
+            int petBreedCol = cursor.getColumnIndex(PetContract.PetsEntry.COLUMN_PET_BREED);
+            int petGenderCol = cursor.getColumnIndex(PetContract.PetsEntry.COLUMN_PET_GENDER);
+            int petWeightCol = cursor.getColumnIndex(PetContract.PetsEntry.COLUMN_PET_WEIGHT);
+            while (cursor.moveToNext()){
+                rowCount.append(cursor.getInt(petIdCol)).append(" - ")
+                        .append(cursor.getString(petNameCol)).append(" - ")
+                        .append(cursor.getString(petBreedCol)).append(" - ")
+                        .append(cursor.getInt(petGenderCol)).append(" - ")
+                        .append(cursor.getInt(petWeightCol)).append("\n\n");
+            }
         }catch (Exception e){
             // Log de erro caso algo aconteca
             Log.e(PetsModel.class.getSimpleName(),"Something went wrong.");
         }finally {
+            Log.e(PetsModel.class.getSimpleName(),""+rowCount);
             // Fecha a requisicao e libera recursos
             cursor.close();
         }
-        return rowCount;
+        return rowCount.toString();
     }
 }

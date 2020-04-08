@@ -23,12 +23,12 @@ public class PetDbHelper extends SQLiteOpenHelper {
         /* FULL STRING TO CREATE THE pets TABLE
         CREATE TABLE pets (_id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT NOT NULL,breed TEXT,gender INTEGER NOT NULL,weight INTEGER NOT NULL DEFAULT 0);
         */
-        String SQL_CREATE_PETS_TABLE = "CREATE TABLE " + PetContract.PetsEntry.TABLE_NAME + "("
-                + PetContract.PetsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + PetContract.PetsEntry.COLUMN_PET_NAME + " TEXT NOT NULL, "
-                + PetContract.PetsEntry.COLUMN_PET_BREED + " TEXT, "
-                + PetContract.PetsEntry.COLUMN_PET_GENDER + " INTEGER NOT NULL, "
-                + PetContract.PetsEntry.COLUMN_PET_WEIGHT + " INTEGER NOT NULL DEFAULT 0"
+        String SQL_CREATE_PETS_TABLE = "CREATE TABLE " + PetContract.PetEntry.TABLE_NAME + "("
+                + PetContract.PetEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + PetContract.PetEntry.COLUMN_PET_NAME + " TEXT NOT NULL, "
+                + PetContract.PetEntry.COLUMN_PET_BREED + " TEXT, "
+                + PetContract.PetEntry.COLUMN_PET_GENDER + " INTEGER NOT NULL, "
+                + PetContract.PetEntry.COLUMN_PET_WEIGHT + " INTEGER NOT NULL DEFAULT 0"
                 + ");";
         db.execSQL(SQL_CREATE_PETS_TABLE);
         Log.e(PetDbHelper.class.getSimpleName(),"SQL da tabela criada = "+SQL_CREATE_PETS_TABLE);

@@ -4,10 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.BaseColumns;
 import android.util.Log;
-
-import java.util.HashMap;
 
 public class PetsModel {
     private PetDbHelper dbHelper;
@@ -23,18 +20,18 @@ public class PetsModel {
         database = dbHelper.getWritableDatabase();
         // Cria os valores das colunas
         ContentValues contentValues = new ContentValues();
-        contentValues.put(PetContract.PetsEntry.COLUMN_PET_NAME, "Toto");
-        contentValues.put(PetContract.PetsEntry.COLUMN_PET_BREED, "Terrier");
-        contentValues.put(PetContract.PetsEntry.COLUMN_PET_GENDER, PetContract.PetsEntry.GENDER_MALE);
-        contentValues.put(PetContract.PetsEntry.COLUMN_PET_WEIGHT, 7);
-        return database.insert(PetContract.PetsEntry.TABLE_NAME, null, contentValues);
+        contentValues.put(PetContract.PetEntry.COLUMN_PET_NAME, "Toto");
+        contentValues.put(PetContract.PetEntry.COLUMN_PET_BREED, "Terrier");
+        contentValues.put(PetContract.PetEntry.COLUMN_PET_GENDER, PetContract.PetEntry.GENDER_MALE);
+        contentValues.put(PetContract.PetEntry.COLUMN_PET_WEIGHT, 7);
+        return database.insert(PetContract.PetEntry.TABLE_NAME, null, contentValues);
     }
     public void readFromPetsdb(){
         // action
     }
     public long insertNewPet(ContentValues contentValues){
         database = dbHelper.getWritableDatabase();
-        return database.insert(PetContract.PetsEntry.TABLE_NAME,null,contentValues);
+        return database.insert(PetContract.PetEntry.TABLE_NAME,null,contentValues);
     }
     public String getRowCount(){
         /** Table pets schema
@@ -47,26 +44,26 @@ public class PetsModel {
         // Configura o camando para ler os dados
         database = dbHelper.getReadableDatabase();
         String[] projection = {
-                PetContract.PetsEntry._ID,
-                PetContract.PetsEntry.COLUMN_PET_NAME,
-                PetContract.PetsEntry.COLUMN_PET_BREED,
-                PetContract.PetsEntry.COLUMN_PET_GENDER,
-                PetContract.PetsEntry.COLUMN_PET_WEIGHT
+                PetContract.PetEntry._ID,
+                PetContract.PetEntry.COLUMN_PET_NAME,
+                PetContract.PetEntry.COLUMN_PET_BREED,
+                PetContract.PetEntry.COLUMN_PET_GENDER,
+                PetContract.PetEntry.COLUMN_PET_WEIGHT
             };
         // Executa o comando para receber todos os dados da tabela
-        Cursor cursor = database.query(PetContract.PetsEntry.TABLE_NAME,projection,null,null,null,null,null);
+        Cursor cursor = database.query(PetContract.PetEntry.TABLE_NAME,projection,null,null,null,null,null);
         int i =0;
         try {
             // Conta o numero de linhas da tabela
             rowCount = new StringBuilder("Number of rows: " + cursor.getCount() + "\nPet table data:\n");
-            rowCount.append(PetContract.PetsEntry._ID + " - " + PetContract.PetsEntry.COLUMN_PET_NAME + " - "
-                    + PetContract.PetsEntry.COLUMN_PET_BREED + " - " + PetContract.PetsEntry.COLUMN_PET_GENDER + " - "
-                    + PetContract.PetsEntry.COLUMN_PET_WEIGHT + "\n\n\n");
-            int petIdCol = cursor.getColumnIndex(PetContract.PetsEntry._ID);
-            int petNameCol = cursor.getColumnIndex(PetContract.PetsEntry.COLUMN_PET_NAME);
-            int petBreedCol = cursor.getColumnIndex(PetContract.PetsEntry.COLUMN_PET_BREED);
-            int petGenderCol = cursor.getColumnIndex(PetContract.PetsEntry.COLUMN_PET_GENDER);
-            int petWeightCol = cursor.getColumnIndex(PetContract.PetsEntry.COLUMN_PET_WEIGHT);
+            rowCount.append(PetContract.PetEntry._ID + " - " + PetContract.PetEntry.COLUMN_PET_NAME + " - "
+                    + PetContract.PetEntry.COLUMN_PET_BREED + " - " + PetContract.PetEntry.COLUMN_PET_GENDER + " - "
+                    + PetContract.PetEntry.COLUMN_PET_WEIGHT + "\n\n\n");
+            int petIdCol = cursor.getColumnIndex(PetContract.PetEntry._ID);
+            int petNameCol = cursor.getColumnIndex(PetContract.PetEntry.COLUMN_PET_NAME);
+            int petBreedCol = cursor.getColumnIndex(PetContract.PetEntry.COLUMN_PET_BREED);
+            int petGenderCol = cursor.getColumnIndex(PetContract.PetEntry.COLUMN_PET_GENDER);
+            int petWeightCol = cursor.getColumnIndex(PetContract.PetEntry.COLUMN_PET_WEIGHT);
             while (cursor.moveToNext()){
                 rowCount.append(cursor.getInt(petIdCol)).append("\t")
                         .append(cursor.getString(petNameCol)).append("\t")

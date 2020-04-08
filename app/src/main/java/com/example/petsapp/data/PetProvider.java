@@ -43,14 +43,14 @@ public class PetProvider extends ContentProvider {
         switch (uriMatcher.match(uri)){
             case PETS:
                 // Se for PETS recebe todos os dados da tabela
-                cursor = database.query(PetContract.PetsEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                cursor = database.query(PetContract.PetEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                 break;
             case PET_ID:
                 // Se for um ID de PETS recebe o pet com o determinado _ID
                 // Para cada "?" no selection é necessario um selectionArgs
-                selection = PetContract.PetsEntry._ID + "=?";
+                selection = PetContract.PetEntry._ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-                cursor = database.query(PetContract.PetsEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                cursor = database.query(PetContract.PetEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                 break;
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI "+uri);

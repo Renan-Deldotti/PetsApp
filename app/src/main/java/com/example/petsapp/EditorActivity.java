@@ -55,18 +55,18 @@ public class EditorActivity extends AppCompatActivity {
                 String selected = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selected)){
                     if (selected.equals(getString(R.string.gender_male))){
-                        gender = PetContract.PetsEntry.GENDER_MALE;
+                        gender = PetContract.PetEntry.GENDER_MALE;
                     }else if (selected.equals(getString(R.string.gender_female))){
-                        gender = PetContract.PetsEntry.GENDER_FEMALE;
+                        gender = PetContract.PetEntry.GENDER_FEMALE;
                     }
                 }else {
-                    gender = PetContract.PetsEntry.GENDER_UNKNOWN;
+                    gender = PetContract.PetEntry.GENDER_UNKNOWN;
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                gender = PetContract.PetsEntry.GENDER_UNKNOWN;
+                gender = PetContract.PetEntry.GENDER_UNKNOWN;
             }
         });
     }
@@ -111,10 +111,10 @@ public class EditorActivity extends AppCompatActivity {
         }
         if (!TextUtils.isEmpty(petName)) {
             ContentValues contentValues = new ContentValues();
-            contentValues.put(PetContract.PetsEntry.COLUMN_PET_NAME, petName);
-            contentValues.put(PetContract.PetsEntry.COLUMN_PET_BREED, petBreed);
-            contentValues.put(PetContract.PetsEntry.COLUMN_PET_GENDER, gender);
-            contentValues.put(PetContract.PetsEntry.COLUMN_PET_WEIGHT, petWeight);
+            contentValues.put(PetContract.PetEntry.COLUMN_PET_NAME, petName);
+            contentValues.put(PetContract.PetEntry.COLUMN_PET_BREED, petBreed);
+            contentValues.put(PetContract.PetEntry.COLUMN_PET_GENDER, gender);
+            contentValues.put(PetContract.PetEntry.COLUMN_PET_WEIGHT, petWeight);
             long rowId = petsModel.insertNewPet(contentValues);
             if (rowId != -1) {
                 Toast.makeText(this, "Pet added id: " + rowId, Toast.LENGTH_LONG).show();

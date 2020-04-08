@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             // Fecha a requisicao e libera recursos
             cursor.close();
         }
-        /*String rowCount = petsModel.getRowCount();
+        //String rowCount = petsModel.getRowCount();
         if (rowId != null){
             if (rowId == -1){
                 Snackbar.make(findViewById(R.id.activity_main),"Erro ao inserir dados ficticios.",BaseTransientBottomBar.LENGTH_LONG).show();
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).show();
             }
-        }*/
+        }
         displayView.setText(rowCount.toString());
     }
 

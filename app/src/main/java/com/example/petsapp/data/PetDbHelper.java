@@ -4,10 +4,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+/** Database Helper */
 public class PetDbHelper extends SQLiteOpenHelper {
     /** Database Version and Name */
     public static final String DATABASE_NAME = "shelter.db";
@@ -20,7 +20,9 @@ public class PetDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        //CREATE TABLE pets (_id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT NOT NULL,breed TEXT,gender INTEGER NOT NULL,weight INTEGER NOT NULL DEFAULT 0);
+        /* FULL STRING TO CREATE THE pets TABLE
+        CREATE TABLE pets (_id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT NOT NULL,breed TEXT,gender INTEGER NOT NULL,weight INTEGER NOT NULL DEFAULT 0);
+        */
         String SQL_CREATE_PETS_TABLE = "CREATE TABLE " + PetContract.PetsEntry.TABLE_NAME + "("
                 + PetContract.PetsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + PetContract.PetsEntry.COLUMN_PET_NAME + " TEXT NOT NULL, "

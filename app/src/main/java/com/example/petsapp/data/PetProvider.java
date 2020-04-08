@@ -4,15 +4,19 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import java.util.Objects;
 
 public class PetProvider extends ContentProvider {
     private PetDbHelper dbHelper;
     @Override
     public boolean onCreate() {
         dbHelper = new PetDbHelper(getContext());
+        Log.e(PetProvider.class.getSimpleName(),"Context: " + Objects.requireNonNull(getContext()).getClass().getName());
         return true;
     }
 

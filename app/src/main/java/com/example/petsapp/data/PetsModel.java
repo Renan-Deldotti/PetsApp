@@ -68,11 +68,11 @@ public class PetsModel {
             int petGenderCol = cursor.getColumnIndex(PetContract.PetsEntry.COLUMN_PET_GENDER);
             int petWeightCol = cursor.getColumnIndex(PetContract.PetsEntry.COLUMN_PET_WEIGHT);
             while (cursor.moveToNext()){
-                rowCount.append(cursor.getInt(petIdCol)).append(" - ")
-                        .append(cursor.getString(petNameCol)).append(" - ")
-                        .append(cursor.getString(petBreedCol)).append(" - ")
-                        .append(cursor.getInt(petGenderCol)).append(" - ")
-                        .append(cursor.getInt(petWeightCol)).append("\n\n");
+                rowCount.append(cursor.getInt(petIdCol)).append("\t")
+                        .append(cursor.getString(petNameCol)).append("\t")
+                        .append(cursor.getString(petBreedCol)).append("\t")
+                        .append(cursor.getInt(petGenderCol)).append("\t")
+                        .append(cursor.getInt(petWeightCol)).append("\n");
             }
         }catch (Exception e){
             // Log de erro caso algo aconteca

@@ -2,6 +2,7 @@ package com.example.petsapp.data;
 
 import android.provider.BaseColumns;
 
+/** Define as variaveis para a tabela Pets */
 public final class PetContract {
     private PetContract(){}
     public static final class PetsEntry implements BaseColumns{

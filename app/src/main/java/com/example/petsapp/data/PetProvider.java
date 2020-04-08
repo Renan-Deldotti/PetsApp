@@ -16,6 +16,13 @@ import java.util.Objects;
 
 public class PetProvider extends ContentProvider {
 
+    /** Table pets schema
+     * _id INTEGER PRIMARY KEY AUTOINCREMENT
+     * name TEXT NOT NULL
+     * breed TEXT
+     * gender INTEGER NOT NULL
+     * weight INTEGER NOT NULL DEFAULT 0 */
+
     private PetDbHelper dbHelper;
     private static final int PETS = 100;
     private static final int PET_ID = 101;

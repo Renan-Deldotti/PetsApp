@@ -29,7 +29,6 @@ public class PetProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         dbHelper = new PetDbHelper(getContext());
-        Log.e(PetProvider.class.getSimpleName(),"Context: " + Objects.requireNonNull(getContext()).getClass().getName());
         return true;
     }
 

@@ -73,21 +73,7 @@ public class PetProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        final int match = uriMatcher.match(uri);
-        switch (match) {
-            case PETS:
-                return insertPet(uri, values);
-            default:
-                throw new IllegalArgumentException("Insertion is not supported for " + uri);
-        }
-    }
-    private Uri insertPet(Uri uri, ContentValues values) {
-
-        // TODO: Insert a new pet into the pets database table with the given ContentValues
-
-        // Once we know the ID of the new row in the table,
-        // return the new URI with the ID appended to the end of it
-        return ContentUris.withAppendedId(uri, id);
+        return null;
     }
 
     @Override

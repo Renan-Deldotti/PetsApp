@@ -79,7 +79,7 @@ public class PetProvider extends ContentProvider {
         switch (match){
             case PETS:
                 String name = values.getAsString(PetContract.PetEntry.COLUMN_PET_NAME);
-                if (TextUtils.isEmpty(name)){
+                if (!PetContract.isValidName(name)){
                     throw new IllegalArgumentException("Pet name required.");
                 }
                 Integer gender = values.getAsInteger(PetContract.PetEntry.COLUMN_PET_GENDER);

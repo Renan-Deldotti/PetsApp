@@ -2,6 +2,7 @@ package com.example.petsapp.data;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.text.TextUtils;
 
 /** Define as variaveis para a tabela Pets */
 public final class PetContract {
@@ -34,5 +35,16 @@ public final class PetContract {
     }
     static boolean isValidGender(int gender){
         return gender == PetEntry.GENDER_UNKNOWN || gender == PetEntry.GENDER_MALE || gender == PetEntry.GENDER_FEMALE;
+    }
+    static boolean isValidName(String name){
+        if(!TextUtils.isEmpty(name)){
+            if(name.length() == 1){
+                if (name.equals(".")||name.equals(",")||name.equals("#")||name.equals("@")||name.equals("!")||name.equals("$")){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 }

@@ -35,6 +35,12 @@ public class PetProvider extends ContentProvider {
         uriMatcher.addURI(PetContract.CONTENT_AUTHORITY,PetContract.PATH_PETS + "/#",PET_ID);
     }
 
+
+    private final int idInvalidName = -2;
+    private final int idInvalidGender = -3;
+    private final int idInvalidWeight = -4;
+    private final int idInvalidBreed = -5;
+
     @Override
     public boolean onCreate() {
         dbHelper = new PetDbHelper(getContext());
@@ -75,9 +81,6 @@ public class PetProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        final int idInvalidName = -2;
-        final int idInvalidGender = -3;
-        final int idInvalidWeight = -4;
         final int match = uriMatcher.match(uri);
         switch (match){
             case PETS:
@@ -116,6 +119,40 @@ public class PetProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        final int match = uriMatcher.match(uri);
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        switch (match){
+            case PETS:
+                return database.update(PetContract.PetEntry.TABLE_NAME,values,selection,selectionArgs);
+            case PET_ID:
+                selection = PetContract.PetEntry._ID + "=?";
+                selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
+                if(values.containsKey(PetContract.PetEntry.COLUMN_PET_NAME)){
+                    if(!PetContract.isValidPetName(values.getAsString(PetContract.PetEntry.COLUMN_PET_NAME))){
+                        return idInvalidName;
+                    }
+                }
+                if(values.containsKey(PetContract.PetEntry.COLUMN_PET_BREED)){
+                    if(!PetContract.isValidBreed(values.getAsString(PetContract.PetEntry.COLUMN_PET_BREED))){
+                        return idInvalidBreed;
+                    }
+                }
+                if(values.containsKey(PetContract.PetEntry.COLUMN_PET_GENDER)){
+                    if (!PetContract.isValidGender(values.getAsInteger(PetContract.PetEntry.COLUMN_PET_GENDER))){
+                        return idInvalidGender;
+                    }
+                }
+                if(values.containsKey(PetContract.PetEntry.COLUMN_PET_WEIGHT)){
+                    if(!PetContract.isValidWeight(values.getAsInteger(PetContract.PetEntry.COLUMN_PET_WEIGHT))){
+                        return idInvalidWeight;
+                    }
+                }
+                if (values.size() == 0){
+                    return 0;
+                }
+                return database.update(PetContract.PetEntry.TABLE_NAME,values,selection,selectionArgs);
+            default:
+                throw new IllegalArgumentException("Update not supported ("+uri+")");
+        }
     }
 }

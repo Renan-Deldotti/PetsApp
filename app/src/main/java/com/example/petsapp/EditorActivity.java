@@ -20,6 +20,8 @@ import androidx.core.app.NavUtils;
 
 import com.example.petsapp.data.PetContract;
 
+import java.util.Objects;
+
 public class EditorActivity extends AppCompatActivity {
     /** Edita ou cria um novo Pet */
     private EditText nameEditText, breedEditText, weightEditText;
@@ -109,8 +111,23 @@ public class EditorActivity extends AppCompatActivity {
             contentValues.put(PetContract.PetEntry.COLUMN_PET_WEIGHT, petWeight);
             Uri newUri = getContentResolver().insert(PetContract.PetEntry.CONTENT_URI,contentValues);
             if (newUri != null) {
-                Toast.makeText(this, getString(R.string.editor_insert_pet_successful), Toast.LENGTH_LONG).show();
-                finish();
+                int returnedId = Integer.parseInt(Objects.requireNonNull(newUri.getLastPathSegment()));
+                switch (returnedId){
+                    case -2:
+                        Toast.makeText(this, "Invalid name.", Toast.LENGTH_LONG).show();
+                        nameEditText.setError("Invalid name");
+                        break;
+                    case -3:
+                        Toast.makeText(this, getString(R.string.editor_insert_pet_failed)+"Invalid gender.", Toast.LENGTH_LONG).show();
+                        break;
+                    case -4:
+                        Toast.makeText(this, getString(R.string.editor_insert_pet_failed)+"Invalid name.", Toast.LENGTH_LONG).show();
+                        break;
+                    default:
+                        Toast.makeText(this, getString(R.string.editor_insert_pet_successful), Toast.LENGTH_LONG).show();
+                        finish();
+                        break;
+                }
             }else {
                 Toast.makeText(this,getString(R.string.editor_insert_pet_failed),Toast.LENGTH_LONG).show();
             }

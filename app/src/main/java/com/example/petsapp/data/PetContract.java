@@ -36,15 +36,19 @@ public final class PetContract {
     static boolean isValidGender(int gender){
         return gender == PetEntry.GENDER_UNKNOWN || gender == PetEntry.GENDER_MALE || gender == PetEntry.GENDER_FEMALE;
     }
-    static boolean isValidName(String name){
-        if(!TextUtils.isEmpty(name)){
-            if(name.length() == 1){
-                if (name.equals(".")||name.equals(",")||name.equals("#")||name.equals("@")||name.equals("!")||name.equals("$")){
+    static boolean isValidPetName(String name){
+        if(!TextUtils.isEmpty(name)) {
+            if (name.length() > 2) {
+                if (name.matches("^\\p{L}+[\\p{L}\\p{Z}\\p{P}]{0,}")) {
+                    return true;
+                } else {
                     return false;
                 }
+            }else{
+                return false;
             }
-            return true;
+        }else{
+            return false;
         }
-        return false;
     }
 }

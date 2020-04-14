@@ -75,21 +75,28 @@ public class PetProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
+        final int idInvalidName = -2;
+        final int idInvalidGender = -3;
+        final int idInvalidWeight = -4;
         final int match = uriMatcher.match(uri);
         switch (match){
             case PETS:
+                // Valida o campo Nome
                 String name = values.getAsString(PetContract.PetEntry.COLUMN_PET_NAME);
-                if (!PetContract.isValidName(name)){
-                    throw new IllegalArgumentException("Pet name required.");
+                if (!PetContract.isValidPetName(name)) {
+                    return ContentUris.withAppendedId(uri, idInvalidName);
                 }
+                // Valida o campo Genero
                 Integer gender = values.getAsInteger(PetContract.PetEntry.COLUMN_PET_GENDER);
                 if(gender == null || !PetContract.isValidGender(gender)){
-                    throw new IllegalArgumentException("Invalid pet gender.");
+                    return ContentUris.withAppendedId(uri, idInvalidGender);
                 }
+                // Valida o campo Peso
                 Integer weight = values.getAsInteger(PetContract.PetEntry.COLUMN_PET_WEIGHT);
                 if(weight != null && weight < 0){
-                    throw new IllegalArgumentException("Invalid pet weight.");
+                    return ContentUris.withAppendedId(uri, idInvalidWeight);
                 }
+                // Se tudo estiver ok, insere os dados
                 SQLiteDatabase database = dbHelper.getWritableDatabase();
                 long id = database.insert(PetContract.PetEntry.TABLE_NAME,null,values);
                 if(id == -1){

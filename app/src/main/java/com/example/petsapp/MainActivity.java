@@ -11,7 +11,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -46,10 +45,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        displayDatabaseInfo(null);
+        displayDatabaseInfo();
     }
 
-    private void displayDatabaseInfo(@Nullable Long rowId) {
+    private void displayDatabaseInfo() {
         StringBuilder rowCount = new StringBuilder();
         TextView displayView = findViewById(R.id.text_view_pet);
         String[] projection = {
@@ -86,19 +85,6 @@ public class MainActivity extends AppCompatActivity {
             // Fecha a requisicao e libera recursos
             cursor.close();
         }
-        //String rowCount = petsModel.getRowCount();
-        if (rowId != null){
-            if (rowId == -1){
-                Snackbar.make(findViewById(R.id.activity_main),"Erro ao inserir dados ficticios.",BaseTransientBottomBar.LENGTH_LONG).show();
-            }else {
-                Snackbar.make(findViewById(R.id.activity_main),"Dados inserido id:"+rowId,BaseTransientBottomBar.LENGTH_LONG).setAction("Desfazer", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getApplicationContext(),"Dados apagados",Toast.LENGTH_LONG).show();
-                    }
-                }).show();
-            }
-        }
         displayView.setText(rowCount.toString());
     }
 
@@ -119,7 +105,17 @@ public class MainActivity extends AppCompatActivity {
             contentValues.put(PetContract.PetEntry.COLUMN_PET_GENDER, PetContract.PetEntry.GENDER_MALE);
             contentValues.put(PetContract.PetEntry.COLUMN_PET_WEIGHT, 7);
             Uri newUri = getContentResolver().insert(PetContract.PetEntry.CONTENT_URI,contentValues);
-            displayDatabaseInfo(null);
+            if (newUri != null){
+                Snackbar.make(findViewById(R.id.activity_main),"Fake pet added",BaseTransientBottomBar.LENGTH_LONG).setAction("Desfazer", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getApplicationContext(),"Dados apagados",Toast.LENGTH_LONG).show();
+                    }
+                }).show();
+            }else{
+                Snackbar.make(findViewById(R.id.activity_main),"Erro ao inserir dados ficticios.",BaseTransientBottomBar.LENGTH_LONG).show();
+            }
+            displayDatabaseInfo();
             return true;
         } else if (id == R.id.action_delete_all_entries) {
             Toast.makeText(this, "Deletando todos os animais...", Toast.LENGTH_SHORT).show();

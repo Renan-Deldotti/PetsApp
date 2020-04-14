@@ -118,10 +118,10 @@ public class EditorActivity extends AppCompatActivity {
                         nameEditText.setError("Invalid name");
                         break;
                     case -3:
-                        Toast.makeText(this, getString(R.string.editor_insert_pet_failed)+"Invalid gender.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, getString(R.string.editor_insert_pet_failed)+"(invalid gender).", Toast.LENGTH_LONG).show();
                         break;
                     case -4:
-                        Toast.makeText(this, getString(R.string.editor_insert_pet_failed)+"Invalid name.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, getString(R.string.editor_insert_pet_failed)+"(invalid weight).", Toast.LENGTH_LONG).show();
                         break;
                     default:
                         Toast.makeText(this, getString(R.string.editor_insert_pet_successful), Toast.LENGTH_LONG).show();

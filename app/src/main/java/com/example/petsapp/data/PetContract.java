@@ -39,7 +39,7 @@ public final class PetContract {
     static boolean isValidPetName(String name){
         if(!TextUtils.isEmpty(name)) {
             if (name.length() > 2) {
-                if (name.matches("^\\p{L}+[\\p{L}\\p{Z}\\p{P}]{0,}")) {
+                if (name.matches("^\\p{L}+[\\p{L}\\p{Z}\\p{P}]{2,}")) {
                     return true;
                 } else {
                     return false;
@@ -47,6 +47,13 @@ public final class PetContract {
             }else{
                 return false;
             }
+        }else{
+            return false;
+        }
+    }
+    static boolean isValidWeight(int weight){
+        if((weight >= 0)){
+            return true;
         }else{
             return false;
         }

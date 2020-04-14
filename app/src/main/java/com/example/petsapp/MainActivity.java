@@ -118,12 +118,11 @@ public class MainActivity extends AppCompatActivity {
             }else{
                 Snackbar.make(findViewById(R.id.activity_main),"Erro ao inserir dados ficticios.",BaseTransientBottomBar.LENGTH_LONG).show();
             }
-            displayDatabaseInfo();
-            return true;
         } else if (id == R.id.action_delete_all_entries) {
-            Toast.makeText(this, "Deletando todos os animais...", Toast.LENGTH_SHORT).show();
-            return true;
+            int i = getContentResolver().delete(PetContract.PetEntry.CONTENT_URI,null,null);
+            Toast.makeText(this, "Deletado "+i+" animais.", Toast.LENGTH_SHORT).show();
         }
+        displayDatabaseInfo();
         return super.onOptionsItemSelected(item);
     }
 }

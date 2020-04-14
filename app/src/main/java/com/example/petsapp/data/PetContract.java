@@ -14,6 +14,7 @@ public final class PetContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://"+CONTENT_AUTHORITY);
     public static final String PATH_PETS = "pets";
 
+    /** Cria o nome das colunas da tabela */
     public static final class PetEntry implements BaseColumns{
 
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI,PATH_PETS);

@@ -7,6 +7,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -77,6 +78,14 @@ public class PetProvider extends ContentProvider {
         final int match = uriMatcher.match(uri);
         switch (match){
             case PETS:
+                String name = values.getAsString(PetContract.PetEntry.COLUMN_PET_NAME);
+                if (TextUtils.isEmpty(name)){
+                    throw new IllegalArgumentException("Pet name required.");
+                }
+                Integer gender = values.getAsInteger(PetContract.PetEntry.COLUMN_PET_GENDER);
+                if(gender == null || !PetContract.isValidGender(gender)){
+                    throw new IllegalArgumentException("Invalid pet gender.");
+                }
                 SQLiteDatabase database = dbHelper.getWritableDatabase();
                 long id = database.insert(PetContract.PetEntry.TABLE_NAME,null,values);
                 if(id == -1){

@@ -3,14 +3,10 @@ package com.example.petsapp;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.example.petsapp.data.PetContract;
-import com.example.petsapp.data.PetDbHelper;
-import com.example.petsapp.data.PetProvider;
-import com.example.petsapp.data.PetsModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -28,7 +24,6 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private PetsModel petsModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        petsModel = new PetsModel(this);
         //displayDatabaseInfo(null);
     }
 
@@ -119,8 +113,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_insert_dummy_data) {
-            long rowId = petsModel.insertDummyData();
-            displayDatabaseInfo(rowId);
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(PetContract.PetEntry.COLUMN_PET_NAME, "Toto");
+            contentValues.put(PetContract.PetEntry.COLUMN_PET_BREED, "Terrier");
+            contentValues.put(PetContract.PetEntry.COLUMN_PET_GENDER, PetContract.PetEntry.GENDER_MALE);
+            contentValues.put(PetContract.PetEntry.COLUMN_PET_WEIGHT, 7);
+            Uri newUri = getContentResolver().insert(PetContract.PetEntry.CONTENT_URI,contentValues);
+            displayDatabaseInfo(null);
             return true;
         } else if (id == R.id.action_delete_all_entries) {
             Toast.makeText(this, "Deletando todos os animais...", Toast.LENGTH_SHORT).show();

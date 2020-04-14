@@ -1,6 +1,7 @@
 package com.example.petsapp;
 
 import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -18,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
 import com.example.petsapp.data.PetContract;
-import com.example.petsapp.data.PetsModel;
 
 public class EditorActivity extends AppCompatActivity {
     /** Edita ou cria um novo Pet */
@@ -26,14 +26,11 @@ public class EditorActivity extends AppCompatActivity {
     private Spinner genderSpinner;
     /** Sexo -> 0 = indefinido, 1 = masculino, 2 = feminino */
     private int gender = 0;
-    /** Cria a variavel para o PetsModel */
-    private PetsModel petsModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
-        petsModel = new PetsModel(this);
         nameEditText = findViewById(R.id.edit_pet_name);
         breedEditText = findViewById(R.id.edit_pet_breed);
         weightEditText = findViewById(R.id.edit_pet_weight);
@@ -95,14 +92,9 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void addNewPet() {
-        EditText editText = findViewById(R.id.edit_pet_name);
-        String petName = "" + editText.getText().toString().trim();
-
-        editText = findViewById(R.id.edit_pet_breed);
-        String petBreed = "" + editText.getText().toString().trim();
-
-        editText = findViewById(R.id.edit_pet_weight);
-        String pw = editText.getText().toString().trim();
+        String petName = "" + nameEditText.getText().toString().trim();
+        String petBreed = "" + breedEditText.getText().toString().trim();
+        String pw = weightEditText.getText().toString().trim();
         int petWeight;
         try {
             petWeight = Integer.parseInt(pw);
@@ -115,16 +107,15 @@ public class EditorActivity extends AppCompatActivity {
             contentValues.put(PetContract.PetEntry.COLUMN_PET_BREED, petBreed);
             contentValues.put(PetContract.PetEntry.COLUMN_PET_GENDER, gender);
             contentValues.put(PetContract.PetEntry.COLUMN_PET_WEIGHT, petWeight);
-            long rowId = petsModel.insertNewPet(contentValues);
-            if (rowId != -1) {
-                Toast.makeText(this, "Pet added id: " + rowId, Toast.LENGTH_LONG).show();
+            Uri newUri = getContentResolver().insert(PetContract.PetEntry.CONTENT_URI,contentValues);
+            if (newUri != null) {
+                Toast.makeText(this, getString(R.string.editor_insert_pet_successful), Toast.LENGTH_LONG).show();
                 finish();
             }else {
-                Toast.makeText(this,"Error code: "+rowId,Toast.LENGTH_LONG).show();
+                Toast.makeText(this,getString(R.string.editor_insert_pet_failed),Toast.LENGTH_LONG).show();
             }
         }else{
-            editText = findViewById(R.id.edit_pet_name);
-            editText.setError("Name field required");
+            nameEditText.setError("Name field required");
         }
     }
 }

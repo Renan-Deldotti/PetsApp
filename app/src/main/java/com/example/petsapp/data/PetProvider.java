@@ -27,6 +27,7 @@ public class PetProvider extends ContentProvider {
     private static final int PETS = 100;
     private static final int PET_ID = 101;
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    public static  final String LOG_TAG = PetProvider.class.getSimpleName();
 
     static {
         uriMatcher.addURI(PetContract.CONTENT_AUTHORITY,PetContract.PATH_PETS,PETS);
@@ -73,8 +74,19 @@ public class PetProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        // Todo: Fazer o metodo insert com dbHelper
-        return null;
+        final int match = uriMatcher.match(uri);
+        switch (match){
+            case PETS:
+                SQLiteDatabase database = dbHelper.getWritableDatabase();
+                long id = database.insert(PetContract.PetEntry.TABLE_NAME,null,values);
+                if(id == -1){
+                    Log.e(LOG_TAG,"Fail to insert row from uri("+uri+")");
+                    return null;
+                }
+                return ContentUris.withAppendedId(uri,id);
+            default:
+                throw new IllegalArgumentException("Insertion not supported ("+uri+").");
+        }
     }
 
     @Override

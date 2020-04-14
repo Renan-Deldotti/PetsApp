@@ -21,6 +21,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 
 
@@ -106,7 +108,8 @@ public class MainActivity extends AppCompatActivity {
             contentValues.put(PetContract.PetEntry.COLUMN_PET_WEIGHT, 7);
             Uri newUri = getContentResolver().insert(PetContract.PetEntry.CONTENT_URI,contentValues);
             if (newUri != null){
-                Snackbar.make(findViewById(R.id.activity_main),"Fake pet added",BaseTransientBottomBar.LENGTH_LONG).setAction("Desfazer", new View.OnClickListener() {
+                int petId = Integer.parseInt(Objects.requireNonNull(newUri.getLastPathSegment()).trim());
+                Snackbar.make(findViewById(R.id.activity_main),"Fake pet added (id: "+petId+")",BaseTransientBottomBar.LENGTH_LONG).setAction("Desfazer", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getApplicationContext(),"Dados apagados",Toast.LENGTH_LONG).show();

@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         displayDatabaseInfo();
     }
 
-    private void displayDatabaseInfo() {
+    private void displayDatabaseInfo() {/*
         StringBuilder rowCount = new StringBuilder();
         TextView displayView = findViewById(R.id.text_view_pet);
         String[] projection = {
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             // Fecha a requisicao e libera recursos
             cursor.close();
         }
-        displayView.setText(rowCount.toString());
+        displayView.setText(rowCount.toString());*/
     }
 
     @Override

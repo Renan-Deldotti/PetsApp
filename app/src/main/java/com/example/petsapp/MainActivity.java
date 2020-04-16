@@ -58,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
         };
         Cursor cursor = getContentResolver().query(PetContract.PetEntry.CONTENT_URI,projection,null,null,null);
         ListView listView = findViewById(R.id.listView);
+        
+        View emptyView = findViewById(R.id.empty_pet_list);
+        listView.setEmptyView(emptyView);
+
         PetCursorAdapter adapter = new PetCursorAdapter(this,cursor);
         listView.setAdapter(adapter);
     }

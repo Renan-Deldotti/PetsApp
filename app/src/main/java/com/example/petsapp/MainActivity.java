@@ -34,6 +34,7 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private ListView listView;
     private static final int PET_LOADER_ID = 0;
     PetCursorAdapter petCursorAdapter;
 
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
         // Configura o listview para dados vazios
-        ListView listView = findViewById(R.id.listView);
+        listView = findViewById(R.id.listView);
         View emptyView = findViewById(R.id.empty_pet_list);
         listView.setEmptyView(emptyView);
 
@@ -88,8 +89,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         AdapterView.AdapterContextMenuInfo adapterContextMenuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()){
             case R.id.delete:
-                Log.e(MainActivity.class.getSimpleName(),"DELETED ID: "+adapterContextMenuInfo.id);
-                getContentResolver().delete(PetContract.PetEntry.CONTENT_URI, PetContract.PetEntry._ID + "=?",new String[]{String.valueOf(adapterContextMenuInfo.id)});
+                String petName = petCursorAdapter.getPetName(adapterContextMenuInfo.position);
+                //int i = getContentResolver().delete(PetContract.PetEntry.CONTENT_URI, PetContract.PetEntry._ID + "=?",new String[]{String.valueOf(adapterContextMenuInfo.id)});
+                if (1 == 1)
+                    Toast.makeText(this,"Pet "+petName+" deleted",Toast.LENGTH_LONG).show();
                 return true;
             default:
                 return super.onContextItemSelected(item);

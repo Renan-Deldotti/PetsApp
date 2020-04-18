@@ -8,9 +8,12 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.example.petsapp.data.PetContract;
 
 class PetCursorAdapter extends CursorAdapter {
+
     public PetCursorAdapter(Context context, Cursor c) {
         super(context, c);
     }
@@ -35,5 +38,11 @@ class PetCursorAdapter extends CursorAdapter {
 
         nameTextView.setText(name);
         summaryTextView.setText(breed);
+    }
+
+    public String getPetName(int position){
+        Cursor positionCursor = (Cursor) getItem(position);
+        int cIndex = positionCursor.getColumnIndex(PetContract.PetEntry.COLUMN_PET_NAME);
+        return positionCursor.getString(cIndex);
     }
 }

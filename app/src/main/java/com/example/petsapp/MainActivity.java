@@ -66,24 +66,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //displayDatabaseInfo();
     }
 
-    /*private void displayDatabaseInfo() {
-        String[] projection = {
-                PetContract.PetEntry._ID,
-                PetContract.PetEntry.COLUMN_PET_NAME,
-                PetContract.PetEntry.COLUMN_PET_BREED,
-                PetContract.PetEntry.COLUMN_PET_GENDER,
-                PetContract.PetEntry.COLUMN_PET_WEIGHT
-        };
-        Cursor cursor = getContentResolver().query(PetContract.PetEntry.CONTENT_URI,projection,null,null,null);
-        ListView listView = findViewById(R.id.listView);
-
-        View emptyView = findViewById(R.id.empty_pet_list);
-        listView.setEmptyView(emptyView);
-
-        PetCursorAdapter adapter = new PetCursorAdapter(this,cursor);
-        listView.setAdapter(adapter);
-    }*/
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Infla o menu principal; e adiciona os itens na action bar (se exisitir).
@@ -116,14 +98,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             int i = getContentResolver().delete(PetContract.PetEntry.CONTENT_URI,null,null);
             Toast.makeText(this, "Deletado "+i+" animais.", Toast.LENGTH_SHORT).show();
         }
-        //displayDatabaseInfo();
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {PetContract.PetEntry._ID, PetContract.PetEntry.COLUMN_PET_NAME, PetContract.PetEntry.COLUMN_PET_BREED};
-        return new CursorLoader(this,PetContract.BASE_CONTENT_URI,projection,null,null,null);
+        return new CursorLoader(this,PetContract.PetEntry.CONTENT_URI,projection,null,null,null);
     }
 
     @Override

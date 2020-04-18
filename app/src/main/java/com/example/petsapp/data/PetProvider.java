@@ -69,6 +69,7 @@ public class PetProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI "+uri);
         }
+        cursor.setNotificationUri(getContext().getContentResolver(),uri);
         return cursor;
     }
 
@@ -112,6 +113,7 @@ public class PetProvider extends ContentProvider {
                     Log.e(LOG_TAG,"Fail to insert row from uri("+uri+")");
                     return null;
                 }
+                getContext().getContentResolver().notifyChange(uri,null);
                 return ContentUris.withAppendedId(uri,id);
             default:
                 throw new IllegalArgumentException("Insertion not supported ("+uri+").");
@@ -123,10 +125,12 @@ public class PetProvider extends ContentProvider {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         switch (uriMatcher.match(uri)){
             case PETS:
+                getContext().getContentResolver().notifyChange(uri,null);
                 return database.delete(PetContract.PetEntry.TABLE_NAME,selection,selectionArgs);
             case PET_ID:
                 selection = PetContract.PetEntry._ID + "=?";
                 selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
+                getContext().getContentResolver().notifyChange(uri,null);
                 return database.delete(PetContract.PetEntry.TABLE_NAME,selection,selectionArgs);
             default:
                 throw new IllegalArgumentException("Delete not supported ("+uri+")");

@@ -123,15 +123,19 @@ public class PetProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
+        int deletedRows;
         switch (uriMatcher.match(uri)){
             case PETS:
-                getContext().getContentResolver().notifyChange(uri,null);
-                return database.delete(PetContract.PetEntry.TABLE_NAME,selection,selectionArgs);
+                deletedRows = database.delete(PetContract.PetEntry.TABLE_NAME,selection,selectionArgs);
+                if (deletedRows !=0)
+                    getContext().getContentResolver().notifyChange(uri,null);
+                return deletedRows;
             case PET_ID:
                 selection = PetContract.PetEntry._ID + "=?";
                 selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
-                getContext().getContentResolver().notifyChange(uri,null);
-                return database.delete(PetContract.PetEntry.TABLE_NAME,selection,selectionArgs);
+                deletedRows = database.delete(PetContract.PetEntry.TABLE_NAME,selection,selectionArgs);
+                if(deletedRows != 0) getContext().getContentResolver().notifyChange(uri,null);
+                return deletedRows;
             default:
                 throw new IllegalArgumentException("Delete not supported ("+uri+")");
         }
@@ -143,6 +147,7 @@ public class PetProvider extends ContentProvider {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         switch (match){
             case PETS:
+                getContext().getContentResolver().notifyChange(uri,null);
                 return database.update(PetContract.PetEntry.TABLE_NAME,values,selection,selectionArgs);
             case PET_ID:
                 selection = PetContract.PetEntry._ID + "=?";
@@ -170,7 +175,10 @@ public class PetProvider extends ContentProvider {
                 if (values.size() == 0){
                     return 0;
                 }
-                return database.update(PetContract.PetEntry.TABLE_NAME,values,selection,selectionArgs);
+                int rowsUpdate = database.update(PetContract.PetEntry.TABLE_NAME,values,selection,selectionArgs);
+                if (rowsUpdate != 0)
+                    getContext().getContentResolver().notifyChange(uri,null);
+                return rowsUpdate;
             default:
                 throw new IllegalArgumentException("Update not supported ("+uri+")");
         }

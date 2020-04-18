@@ -1,6 +1,9 @@
 package com.example.petsapp;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,8 +42,37 @@ public class EditorActivity extends AppCompatActivity {
         breedEditText = findViewById(R.id.edit_pet_breed);
         weightEditText = findViewById(R.id.edit_pet_weight);
         genderSpinner = findViewById(R.id.spinner_gender);
-        setupSpinner();
+        //setupSpinner();
+        TextView catStyle = findViewById(R.id.randomIdGender);
+        catStyle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(EditorActivity.this);
+                builder.setTitle("Chose a gender").setItems(R.array.array_gender_options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(EditorActivity.this,"Index: "+which,Toast.LENGTH_LONG).show();
+                        switch (which){
+                            case 1:
+                                gender = 1;
+                                Toast.makeText(EditorActivity.this,"Index: "+which+" (M)",Toast.LENGTH_LONG).show();
+                                break;
+                            case 2:
+                                gender = 2;
+                                Toast.makeText(EditorActivity.this,"Index: "+which+" (F)",Toast.LENGTH_LONG).show();
+                                break;
+                            default:
+                                gender = 0;
+                                Toast.makeText(EditorActivity.this,"Index: "+which+" (IND)",Toast.LENGTH_LONG).show();
+                                break;
+                        }
+                    }
+                });
+                builder.show();
+            }
+        });
     }
+
     /** Configura o dropdown do spinner */
     private void setupSpinner() {
         // Cria o array para o spinner atraves do resource Arrays

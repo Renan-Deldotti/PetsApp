@@ -1,7 +1,10 @@
 package com.example.petsapp;
 
+import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,8 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
 
 import android.util.Log;
 import android.view.View;
@@ -30,6 +31,8 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final int PET_LOADER_ID = 0;
+    PetCursorAdapter petCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +47,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 startActivity(intent);
             }
         });
+        // Configura o listview para dados vazios
+        ListView listView = findViewById(R.id.listView);
+        View emptyView = findViewById(R.id.empty_pet_list);
+        listView.setEmptyView(emptyView);
+
+        // Adiciona o adapter
+        petCursorAdapter = new PetCursorAdapter(this,null);
+        listView.setAdapter(petCursorAdapter);
+
+        //Adiciona o Loader
+        getLoaderManager().initLoader(PET_LOADER_ID,null,this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        displayDatabaseInfo();
+        //displayDatabaseInfo();
     }
 
-    private void displayDatabaseInfo() {
+    /*private void displayDatabaseInfo() {
         String[] projection = {
                 PetContract.PetEntry._ID,
                 PetContract.PetEntry.COLUMN_PET_NAME,
@@ -68,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         PetCursorAdapter adapter = new PetCursorAdapter(this,cursor);
         listView.setAdapter(adapter);
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -102,25 +116,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             int i = getContentResolver().delete(PetContract.PetEntry.CONTENT_URI,null,null);
             Toast.makeText(this, "Deletado "+i+" animais.", Toast.LENGTH_SHORT).show();
         }
-        displayDatabaseInfo();
+        //displayDatabaseInfo();
         return super.onOptionsItemSelected(item);
     }
 
-    @NonNull
     @Override
-    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {PetContract.PetEntry._ID, PetContract.PetEntry.COLUMN_PET_NAME, PetContract.PetEntry.COLUMN_PET_BREED};
-        Cursor cursor = getContentResolver().query(PetContract.BASE_CONTENT_URI,projection,null,null,null);
-        return null;
+        return new CursorLoader(this,PetContract.BASE_CONTENT_URI,projection,null,null,null);
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        petCursorAdapter.swapCursor(data);
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-
+    public void onLoaderReset(Loader<Cursor> loader) {
+        petCursorAdapter.swapCursor(null);
     }
 }

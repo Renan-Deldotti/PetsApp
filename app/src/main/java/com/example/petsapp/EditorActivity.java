@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,9 +31,9 @@ import java.util.Objects;
 public class EditorActivity extends AppCompatActivity {
     /** Edita ou cria um novo Pet */
     private EditText nameEditText, breedEditText, weightEditText;
-    private Spinner genderSpinner;
+    private Button genderSpinner;
     /** Sexo -> 0 = indefinido, 1 = masculino, 2 = feminino */
-    private int gender = 0;
+    private int gender = PetContract.PetEntry.GENDER_UNKNOWN;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,8 +44,7 @@ public class EditorActivity extends AppCompatActivity {
         weightEditText = findViewById(R.id.edit_pet_weight);
         genderSpinner = findViewById(R.id.spinner_gender);
         //setupSpinner();
-        TextView catStyle = findViewById(R.id.randomIdGender);
-        catStyle.setOnClickListener(new View.OnClickListener() {
+        genderSpinner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(EditorActivity.this);
@@ -54,16 +54,16 @@ public class EditorActivity extends AppCompatActivity {
                         Toast.makeText(EditorActivity.this,"Index: "+which,Toast.LENGTH_LONG).show();
                         switch (which){
                             case 1:
-                                gender = 1;
-                                Toast.makeText(EditorActivity.this,"Index: "+which+" (M)",Toast.LENGTH_LONG).show();
+                                genderSpinner.setText("Male");
+                                gender = PetContract.PetEntry.GENDER_MALE;
                                 break;
                             case 2:
-                                gender = 2;
-                                Toast.makeText(EditorActivity.this,"Index: "+which+" (F)",Toast.LENGTH_LONG).show();
+                                genderSpinner.setText("Female");
+                                gender = PetContract.PetEntry.GENDER_FEMALE;
                                 break;
                             default:
-                                gender = 0;
-                                Toast.makeText(EditorActivity.this,"Index: "+which+" (IND)",Toast.LENGTH_LONG).show();
+                                genderSpinner.setText("Unknown");
+                                gender = PetContract.PetEntry.GENDER_UNKNOWN;
                                 break;
                         }
                     }
@@ -73,8 +73,8 @@ public class EditorActivity extends AppCompatActivity {
         });
     }
 
-    /** Configura o dropdown do spinner */
-    private void setupSpinner() {
+    /** Configura o dropdown do spinner (REMOVED SPINNER)*/
+    /*private void setupSpinner() {
         // Cria o array para o spinner atraves do resource Arrays
         ArrayAdapter genderSpinnerAdapter = ArrayAdapter.createFromResource(this,R.array.array_gender_options,android.R.layout.simple_spinner_item);
         // Seta 1 linha por item no adapter
@@ -102,7 +102,7 @@ public class EditorActivity extends AppCompatActivity {
                 gender = PetContract.PetEntry.GENDER_UNKNOWN;
             }
         });
-    }
+    }*/
 
     /** Infla o menu do menu_editor */
     @Override

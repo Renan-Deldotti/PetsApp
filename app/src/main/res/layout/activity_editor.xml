@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_editor"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/activity_margin"
-    tools:context=".EditorActivity"
-    android:id="@+id/activity_editor">
+    tools:context=".EditorActivity">
 
     <TextView
         style="@style/CategoryStyle"
@@ -38,14 +38,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline_33_pc"
         app:layout_constraintTop_toBottomOf="@id/edit_pet_name" />
-
-    <Spinner
+    <!--Spinner
         android:id="@+id/spinner_gender"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:spinnerMode="dropdown"
         android:dropDownWidth="128dp"
         android:tooltipText="Gender select"
+        app:layout_constraintStart_toEndOf="@id/guideline_33_pc"
+        app:layout_constraintTop_toBottomOf="@id/edit_pet_breed" /-->
+    <Button
+        android:id="@+id/spinner_gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:drawableEnd="@drawable/ic_arrow_drop_down"
+        android:drawablePadding="8dp"
+        android:paddingStart="8dp"
+        android:text="Select a gender"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
         app:layout_constraintStart_toEndOf="@id/guideline_33_pc"
         app:layout_constraintTop_toBottomOf="@id/edit_pet_breed" />
 

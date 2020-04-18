@@ -20,9 +20,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +61,39 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         //Adiciona o Loader
         getLoaderManager().initLoader(PET_LOADER_ID,null,this);
+
+        // Coloca ação de long click
+        registerForContextMenu(listView);
+        /* Usar onCreateContextMenu
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(MainActivity.this,"Long clicked (item id: " + id + ")",Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });*/
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId() == R.id.listView){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.dropdown_listview,menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo adapterContextMenuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()){
+            case R.id.delete:
+                Log.e(MainActivity.class.getSimpleName(),"DELETED ID: "+adapterContextMenuInfo.id);
+                getContentResolver().delete(PetContract.PetEntry.CONTENT_URI, PetContract.PetEntry._ID + "=?",new String[]{String.valueOf(adapterContextMenuInfo.id)});
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     @Override
@@ -84,11 +120,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             contentValues.put(PetContract.PetEntry.COLUMN_PET_WEIGHT, 7);
             Uri newUri = getContentResolver().insert(PetContract.PetEntry.CONTENT_URI,contentValues);
             if (newUri != null){
-                int petId = Integer.parseInt(Objects.requireNonNull(newUri.getLastPathSegment()).trim());
+                final int petId = Integer.parseInt(Objects.requireNonNull(newUri.getLastPathSegment()).trim());
                 Snackbar.make(findViewById(R.id.activity_main),"Fake pet added (id: "+petId+")",BaseTransientBottomBar.LENGTH_LONG).setAction("Desfazer", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getApplicationContext(),"Dados apagados",Toast.LENGTH_LONG).show();
+                        String[] toDelete = {String.valueOf(petId)};
+                        int i = getContentResolver().delete(PetContract.PetEntry.CONTENT_URI, PetContract.PetEntry._ID + "=?",toDelete);
+                        Toast.makeText(getApplicationContext(),"Dados apagados: "+i,Toast.LENGTH_LONG).show();
                     }
                 }).show();
             }else{

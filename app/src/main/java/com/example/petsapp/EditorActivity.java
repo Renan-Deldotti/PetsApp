@@ -1,7 +1,7 @@
 package com.example.petsapp;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
@@ -15,13 +15,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,7 +41,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private int gender = PetContract.PetEntry.GENDER_UNKNOWN;
     private Uri petUri;
     private int loaderId = 1;
+    private boolean isNewPet = true;
+    private boolean hasChangedPetInfo = false;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,12 +54,18 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         weightEditText = findViewById(R.id.edit_pet_weight);
         genderSpinner = findViewById(R.id.spinner_gender);
 
+        nameEditText.setOnTouchListener(touchListener);
+        breedEditText.setOnTouchListener(touchListener);
+        weightEditText.setOnTouchListener(touchListener);
+        genderSpinner.setOnTouchListener(touchListener);
+
         Intent intent = getIntent();
         petUri = intent.getData();
 
         if (petUri != null){
             setTitle("Edit pet");
             getLoaderManager().initLoader(loaderId,null,this);
+            isNewPet = false;
         }else{
             setTitle("Add pet");
         }
@@ -91,6 +100,38 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        if(!hasChangedPetInfo) {
+            super.onBackPressed();
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditorActivity.this);
+        builder.setMessage("Are you sure you want to exit?");
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                hasChangedPetInfo = false;
+                onBackPressed();
+            }
+        });
+        builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                return;
+            }
+        });
+        builder.show();
+    }
+
+    private View.OnTouchListener touchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            hasChangedPetInfo = true;
+            return false;
+        }
+    };
 
     /** Configura o dropdown do spinner (REMOVED SPINNER)*/
     private void setupSpinner() {
@@ -135,18 +176,37 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_save:
-                addNewPet();
+                savePet();
                 return true;
             case R.id.action_delete:
                 return true;
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                Log.e("UEWNQIUEQENQO","hasChangedPetInfo: "+hasChangedPetInfo);
+                if (!hasChangedPetInfo){
+                    // Vai para a Activity pai
+                    NavUtils.navigateUpFromSameTask(this);
+                    return true;
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(EditorActivity.this);
+                builder.setMessage("Are you sure you want to exit?");
+                builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                    }
+                });
+                builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                builder.show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void addNewPet() {
+    private void savePet() {
         String petName = "" + nameEditText.getText().toString().trim();
         String petBreed = "" + breedEditText.getText().toString().trim();
         String pw = weightEditText.getText().toString().trim();
@@ -162,27 +222,38 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             contentValues.put(PetContract.PetEntry.COLUMN_PET_BREED, petBreed);
             contentValues.put(PetContract.PetEntry.COLUMN_PET_GENDER, gender);
             contentValues.put(PetContract.PetEntry.COLUMN_PET_WEIGHT, petWeight);
-            Uri newUri = getContentResolver().insert(PetContract.PetEntry.CONTENT_URI,contentValues);
-            if (newUri != null) {
-                int returnedId = Integer.parseInt(Objects.requireNonNull(newUri.getLastPathSegment()));
-                switch (returnedId){
-                    case -2:
-                        Toast.makeText(this, "Invalid name.", Toast.LENGTH_LONG).show();
-                        nameEditText.setError("Invalid name");
-                        break;
-                    case -3:
-                        Toast.makeText(this, getString(R.string.editor_insert_pet_failed)+"(invalid gender).", Toast.LENGTH_LONG).show();
-                        break;
-                    case -4:
-                        Toast.makeText(this, getString(R.string.editor_insert_pet_failed)+"(invalid weight).", Toast.LENGTH_LONG).show();
-                        break;
-                    default:
-                        Toast.makeText(this, getString(R.string.editor_insert_pet_successful), Toast.LENGTH_LONG).show();
-                        finish();
-                        break;
+
+            if(!isNewPet){
+                int rowsUpdated = getContentResolver().update(petUri,contentValues,null,null);
+                if(rowsUpdated == 1) {
+                    Toast.makeText(this, "Pet updated :)", Toast.LENGTH_LONG).show();
+                    finish();
+                }else{
+                    Toast.makeText(this,"Error try again :(",Toast.LENGTH_LONG).show();
                 }
-            }else {
-                Toast.makeText(this,getString(R.string.editor_insert_pet_failed),Toast.LENGTH_LONG).show();
+            }else{
+                Uri newUri = getContentResolver().insert(PetContract.PetEntry.CONTENT_URI,contentValues);
+                if (newUri != null) {
+                    int returnedId = Integer.parseInt(Objects.requireNonNull(newUri.getLastPathSegment()));
+                    switch (returnedId){
+                        case -2:
+                            Toast.makeText(this, "Invalid name.", Toast.LENGTH_LONG).show();
+                            nameEditText.setError("Invalid name");
+                            break;
+                        case -3:
+                            Toast.makeText(this, getString(R.string.editor_insert_pet_failed)+"(invalid gender).", Toast.LENGTH_LONG).show();
+                            break;
+                        case -4:
+                            Toast.makeText(this, getString(R.string.editor_insert_pet_failed)+"(invalid weight).", Toast.LENGTH_LONG).show();
+                            break;
+                        default:
+                            Toast.makeText(this, getString(R.string.editor_insert_pet_successful), Toast.LENGTH_LONG).show();
+                            finish();
+                            break;
+                    }
+                }else {
+                    Toast.makeText(this,getString(R.string.editor_insert_pet_failed),Toast.LENGTH_LONG).show();
+                }
             }
         }else{
             nameEditText.setError("Name field required");

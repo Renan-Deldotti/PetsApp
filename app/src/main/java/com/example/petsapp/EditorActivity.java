@@ -2,8 +2,13 @@ package com.example.petsapp;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -28,12 +33,14 @@ import com.example.petsapp.data.PetContract;
 
 import java.util.Objects;
 
-public class EditorActivity extends AppCompatActivity {
+public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     /** Edita ou cria um novo Pet */
     private EditText nameEditText, breedEditText, weightEditText;
-    private Button genderSpinner;
+    private Spinner genderSpinner;
     /** Sexo -> 0 = indefinido, 1 = masculino, 2 = feminino */
     private int gender = PetContract.PetEntry.GENDER_UNKNOWN;
+    private Uri petUri;
+    private int loaderId = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,27 +50,39 @@ public class EditorActivity extends AppCompatActivity {
         breedEditText = findViewById(R.id.edit_pet_breed);
         weightEditText = findViewById(R.id.edit_pet_weight);
         genderSpinner = findViewById(R.id.spinner_gender);
-        //setupSpinner();
-        genderSpinner.setOnClickListener(new View.OnClickListener() {
+
+        Intent intent = getIntent();
+        petUri = intent.getData();
+
+        if (petUri != null){
+            setTitle("Edit pet");
+            getLoaderManager().initLoader(loaderId,null,this);
+        }else{
+            setTitle("Add pet");
+        }
+        setupSpinner();
+
+        final Button buttonTeste = findViewById(R.id.button_teste);
+        /** Teste */
+        buttonTeste.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(EditorActivity.this);
                 builder.setTitle("Chose a gender").setItems(R.array.array_gender_options, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(EditorActivity.this,"Index: "+which,Toast.LENGTH_LONG).show();
                         switch (which){
                             case 1:
-                                genderSpinner.setText("Male");
-                                gender = PetContract.PetEntry.GENDER_MALE;
+                                buttonTeste.setText("Opt 1");
+                                Toast.makeText(EditorActivity.this,"Selected: Male",Toast.LENGTH_LONG).show();
                                 break;
                             case 2:
-                                genderSpinner.setText("Female");
-                                gender = PetContract.PetEntry.GENDER_FEMALE;
+                                buttonTeste.setText("Opt 2");
+                                Toast.makeText(EditorActivity.this,"Selected: Female",Toast.LENGTH_LONG).show();
                                 break;
                             default:
-                                genderSpinner.setText("Unknown");
-                                gender = PetContract.PetEntry.GENDER_UNKNOWN;
+                                buttonTeste.setText("Opt 0");
+                                Toast.makeText(EditorActivity.this,"Selected: Unknown",Toast.LENGTH_LONG).show();
                                 break;
                         }
                     }
@@ -74,7 +93,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     /** Configura o dropdown do spinner (REMOVED SPINNER)*/
-    /*private void setupSpinner() {
+    private void setupSpinner() {
         // Cria o array para o spinner atraves do resource Arrays
         ArrayAdapter genderSpinnerAdapter = ArrayAdapter.createFromResource(this,R.array.array_gender_options,android.R.layout.simple_spinner_item);
         // Seta 1 linha por item no adapter
@@ -102,7 +121,7 @@ public class EditorActivity extends AppCompatActivity {
                 gender = PetContract.PetEntry.GENDER_UNKNOWN;
             }
         });
-    }*/
+    }
 
     /** Infla o menu do menu_editor */
     @Override
@@ -168,5 +187,41 @@ public class EditorActivity extends AppCompatActivity {
         }else{
             nameEditText.setError("Name field required");
         }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String[] projection = {PetContract.PetEntry._ID,PetContract.PetEntry.COLUMN_PET_NAME, PetContract.PetEntry.COLUMN_PET_BREED, PetContract.PetEntry.COLUMN_PET_GENDER, PetContract.PetEntry.COLUMN_PET_WEIGHT};
+        Log.e(EditorActivity.class.getSimpleName(),"Uri: "+petUri);
+        return new CursorLoader(this, petUri,projection,null,null,null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        // Sempre usar .moveToFirst()
+        // Default index do cursor é -1
+        if(data.moveToFirst()){
+            // Adiciona o nome ao EditText de name
+            int nameColumnIndex = data.getColumnIndex(PetContract.PetEntry.COLUMN_PET_NAME);
+            String name = data.getString(nameColumnIndex);
+            nameEditText.setText(name);
+            // Adiciona os outros campos
+            breedEditText.setText(data.getString(data.getColumnIndex(PetContract.PetEntry.COLUMN_PET_BREED)));
+            weightEditText.setText(String.valueOf(data.getInt(data.getColumnIndex(PetContract.PetEntry.COLUMN_PET_WEIGHT))).trim());
+            gender = data.getInt(data.getColumnIndex(PetContract.PetEntry.COLUMN_PET_GENDER));
+            if(gender < 0 || gender >2 ){
+                genderSpinner.setSelection(0);
+            }else {
+                genderSpinner.setSelection(gender);
+            }
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        nameEditText.setText("");
+        breedEditText.setText("");
+        weightEditText.setText("");
+        genderSpinner.setSelection(PetContract.PetEntry.GENDER_UNKNOWN);
     }
 }

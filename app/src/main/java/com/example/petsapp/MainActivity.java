@@ -1,6 +1,7 @@
 package com.example.petsapp;
 
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -65,16 +66,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // Coloca ação de long click
         registerForContextMenu(listView);
-        /* Usar onCreateContextMenu
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this,"Long clicked (item id: " + id + ")",Toast.LENGTH_LONG).show();
-                return true;
-            }
-        });*/
     }
-
+    /** Cria o menu de presisonamento longo */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -88,10 +81,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo adapterContextMenuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()){
+            case R.id.edit:
+                Intent intent = new Intent(MainActivity.this,EditorActivity.class);
+                // Passa o id na Uri para a Intent EditorActivity
+                Uri uri = ContentUris.withAppendedId(PetContract.PetEntry.CONTENT_URI,adapterContextMenuInfo.id);
+                intent.setData(uri);
+                startActivity(intent);
+                return true;
             case R.id.delete:
                 String petName = petCursorAdapter.getPetName(adapterContextMenuInfo.position);
-                //int i = getContentResolver().delete(PetContract.PetEntry.CONTENT_URI, PetContract.PetEntry._ID + "=?",new String[]{String.valueOf(adapterContextMenuInfo.id)});
-                if (1 == 1)
+                int i = getContentResolver().delete(PetContract.PetEntry.CONTENT_URI, PetContract.PetEntry._ID + "=?",new String[]{String.valueOf(adapterContextMenuInfo.id)});
+                if (i == 1)
                     Toast.makeText(this,"Pet "+petName+" deleted",Toast.LENGTH_LONG).show();
                 return true;
             default:
@@ -99,12 +99,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //displayDatabaseInfo();
-    }
-
+    /** Cria os icones da navbar */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Infla o menu principal; e adiciona os itens na action bar (se exisitir).
@@ -141,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         return super.onOptionsItemSelected(item);
     }
-
+    /** Cria o loader */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {PetContract.PetEntry._ID, PetContract.PetEntry.COLUMN_PET_NAME, PetContract.PetEntry.COLUMN_PET_BREED};

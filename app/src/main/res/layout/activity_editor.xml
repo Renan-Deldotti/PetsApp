@@ -38,26 +38,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline_33_pc"
         app:layout_constraintTop_toBottomOf="@id/edit_pet_name" />
-    <!--Spinner
+    <Spinner
         android:id="@+id/spinner_gender"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:spinnerMode="dropdown"
         android:dropDownWidth="128dp"
         android:tooltipText="Gender select"
-        app:layout_constraintStart_toEndOf="@id/guideline_33_pc"
-        app:layout_constraintTop_toBottomOf="@id/edit_pet_breed" /-->
-    <Button
-        android:id="@+id/spinner_gender"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:drawableEnd="@drawable/ic_arrow_drop_down"
-        android:drawablePadding="8dp"
-        android:paddingStart="8dp"
-        android:text="Select a gender"
-        android:textAllCaps="false"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
         app:layout_constraintStart_toEndOf="@id/guideline_33_pc"
         app:layout_constraintTop_toBottomOf="@id/edit_pet_breed" />
 
@@ -106,4 +93,20 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.33" />
+
+    <Button
+        android:id="@+id/button_teste"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:drawableEnd="@drawable/ic_arrow_drop_down"
+        android:drawablePadding="8dp"
+        android:paddingStart="8dp"
+        android:text="Teste"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_pet_weight"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

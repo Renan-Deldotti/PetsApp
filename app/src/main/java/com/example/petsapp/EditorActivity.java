@@ -43,6 +43,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private int loaderId = 1;
     private boolean isNewPet = true;
     private boolean hasChangedPetInfo = false;
+    private String actualPetName;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -66,6 +67,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             setTitle("Edit pet");
             getLoaderManager().initLoader(loaderId,null,this);
             isNewPet = false;
+            actualPetName = "Jhon";
         }else{
             setTitle("Add pet");
         }
@@ -193,6 +195,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 savePet();
                 return true;
             case R.id.action_delete:
+                deleteThisPet();
                 return true;
             case android.R.id.home:
                 if (!hasChangedPetInfo){
@@ -217,6 +220,24 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteThisPet() {
+        if (isNewPet)
+            return;
+        int idToDelete = -1;
+        if (petUri.getLastPathSegment() != null) {
+            idToDelete = Integer.parseInt(petUri.getLastPathSegment());
+        }
+        int deletedRows = 0;
+        if(idToDelete != -1){
+            deletedRows = getContentResolver().delete(petUri,null,null);
+            if(deletedRows == 1)
+                Toast.makeText(EditorActivity.this,actualPetName+" deleted",Toast.LENGTH_LONG).show();
+            NavUtils.navigateUpFromSameTask(EditorActivity.this);
+            return;
+        }
+        Toast.makeText(EditorActivity.this,"Something went wrong",Toast.LENGTH_LONG).show();
     }
 
     private void savePet() {

@@ -1,9 +1,11 @@
 package com.example.petsapp;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -131,8 +133,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Snackbar.make(findViewById(R.id.activity_main),"Erro ao inserir dados ficticios.",BaseTransientBottomBar.LENGTH_LONG).show();
             }
         } else if (id == R.id.action_delete_all_entries) {
-            int i = getContentResolver().delete(PetContract.PetEntry.CONTENT_URI,null,null);
-            Toast.makeText(this, "Deletado "+i+" animais.", Toast.LENGTH_SHORT).show();
+            if (petCursorAdapter.getCount() <= 0 ){
+                Toast.makeText(MainActivity.this,"Não há animais",Toast.LENGTH_LONG).show();
+                return super.onOptionsItemSelected(item);
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage("Delete all the pets?");
+            builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    int i = getContentResolver().delete(PetContract.PetEntry.CONTENT_URI,null,null);
+                    Toast.makeText(MainActivity.this, "Deletado "+i+" animais.", Toast.LENGTH_SHORT).show();
+                }
+            });
+            builder.setNegativeButton(android.R.string.no, null);
+            builder.show();
         }
         return super.onOptionsItemSelected(item);
     }

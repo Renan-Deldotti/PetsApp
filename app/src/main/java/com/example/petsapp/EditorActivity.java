@@ -168,6 +168,20 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_editor, menu);
+        if (isNewPet){
+            MenuItem delete = menu.findItem(R.id.action_delete);
+            delete.setVisible(false);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        if(isNewPet){
+            MenuItem delete = menu.findItem(R.id.action_delete);
+            delete.setVisible(false);
+        }
         return true;
     }
 
@@ -181,7 +195,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             case R.id.action_delete:
                 return true;
             case android.R.id.home:
-                Log.e("UEWNQIUEQENQO","hasChangedPetInfo: "+hasChangedPetInfo);
                 if (!hasChangedPetInfo){
                     // Vai para a Activity pai
                     NavUtils.navigateUpFromSameTask(this);
@@ -263,7 +276,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {PetContract.PetEntry._ID,PetContract.PetEntry.COLUMN_PET_NAME, PetContract.PetEntry.COLUMN_PET_BREED, PetContract.PetEntry.COLUMN_PET_GENDER, PetContract.PetEntry.COLUMN_PET_WEIGHT};
-        Log.e(EditorActivity.class.getSimpleName(),"Uri: "+petUri);
         return new CursorLoader(this, petUri,projection,null,null,null);
     }
 

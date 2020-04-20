@@ -230,7 +230,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             idToDelete = Integer.parseInt(petUri.getLastPathSegment());
         }
         if(idToDelete != -1){
-
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Are you sure you want to delete this pet?");
             builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {

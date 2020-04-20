@@ -229,12 +229,24 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         if (petUri.getLastPathSegment() != null) {
             idToDelete = Integer.parseInt(petUri.getLastPathSegment());
         }
-        int deletedRows = 0;
         if(idToDelete != -1){
-            deletedRows = getContentResolver().delete(petUri,null,null);
-            if(deletedRows == 1)
-                Toast.makeText(EditorActivity.this,actualPetName+" deleted",Toast.LENGTH_LONG).show();
-            NavUtils.navigateUpFromSameTask(EditorActivity.this);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Are you sure you want to delete this pet?");
+            builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    int deletedRows = getContentResolver().delete(petUri,null,null);
+                    if(deletedRows == 1) {
+                        Toast.makeText(EditorActivity.this, actualPetName + " deleted", Toast.LENGTH_LONG).show();
+                        NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                    }else {
+                        Toast.makeText(EditorActivity.this,"Something wen wrong",Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+            builder.setNegativeButton(android.R.string.no,null);
+            builder.show();
             return;
         }
         Toast.makeText(EditorActivity.this,"Something went wrong",Toast.LENGTH_LONG).show();
@@ -309,6 +321,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             int nameColumnIndex = data.getColumnIndex(PetContract.PetEntry.COLUMN_PET_NAME);
             String name = data.getString(nameColumnIndex);
             nameEditText.setText(name);
+            actualPetName = name;
             // Adiciona os outros campos
             breedEditText.setText(data.getString(data.getColumnIndex(PetContract.PetEntry.COLUMN_PET_BREED)));
             weightEditText.setText(String.valueOf(data.getInt(data.getColumnIndex(PetContract.PetEntry.COLUMN_PET_WEIGHT))).trim());
